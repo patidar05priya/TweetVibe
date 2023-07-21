@@ -1,22 +1,20 @@
 package com.tweetvibe.controller;
 
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.tweetvibe.service.TweetVibeProducerService;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class TweetVibeController {
 
-    private KafkaTemplate<String, String> template;
+    private final TweetVibeProducerService tweetVibeProducerService;
 
-    public TweetVibeController(KafkaTemplate<String, String> template) {
-        this.template = template;
+    public TweetVibeController(TweetVibeProducerService tweetVibeProducerService) {
+        this.tweetVibeProducerService = tweetVibeProducerService;
 
     }
 
-    @GetMapping("/kafka/produce")
-    public void produce(@RequestParam String message) {
-        template.send("myTopic", message);
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public void produce() {
+        tweetVibeProducerService.sendMessageToKafkaTopic("tweet-vibe", "hello");
     }
 }
